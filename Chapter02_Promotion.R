@@ -12,6 +12,8 @@ print(str(dodgers))  # check the structure of the data frame
 # 按星期进行排序，如果不转换成factor，那么将按字典序排列
 # 本句新创建一列，把星期变换为数值，在下一句，把该列变换为factor
 # 这样排序按照数值进行排列，而作图时，会显示factor的label。
+
+# ifelse(b, u, v) 函数是类似于SQL case when语句, b, u, v都是向量，b是布尔向量
 dodgers$ordered_day_of_week <- with(data=dodgers,
   ifelse ((day_of_week == "Monday"),1,
   ifelse ((day_of_week == "Tuesday"),2,
@@ -24,9 +26,15 @@ dodgers$ordered_day_of_week <- factor(dodgers$ordered_day_of_week, levels=1:7,
 labels=c("Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"))
 
 # exploratory data analysis with standard graphics: attendance by day of week
+# To Do: 研究这里的plot为什么会画boxplot？
 with(data=dodgers,plot(ordered_day_of_week, attend/1000, 
 xlab = "Day of Week", ylab = "Attendance (thousands)", 
 col = "violet", las = 1))
+
+#上面这个plot 等价于
+# with(data=dodgers,boxplot(attend/1000 ~ ordered_day_of_week, 
+# xlab = "Day of Week", ylab = "Attendance (thousands)", 
+# col = "violet", las = 1))
 
 # when do the Dodgers use bobblehead promotions
 with(dodgers, table(bobblehead,ordered_day_of_week)) # bobbleheads on Tuesday
