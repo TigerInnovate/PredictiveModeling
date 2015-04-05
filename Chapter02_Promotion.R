@@ -75,7 +75,25 @@ xyplot(attend/1000 ~ temp | skies + day_night,
         text = list(rev(group.labels),col = rev(group.colors)),
         points = list(pch = rev(group.symbols), col = rev(group.colors),
         fill = rev(group.fill))))  
-                
+# xyplot(attend/1000 ~ temp | skies + day_night,  # y轴 attend/1000, x轴temp，按(skies, day_night)分组条件（术语：conditioning variables），每一组一个panel画图；| 后边表示分组条件，一般都是factor
+#     data = dodgers, 
+#     groups = fireworks, # 每一个panel内的分组条件（术语：grouping variable），用于区别不同点，通过str(dodgers)查看，第一个值是No，第二个值是Yes
+#     pch = group.symbols,# 指定groups后，指明第一个组的点的形状和第二个组的形状
+#     col = group.colors, fill = group.fill, #指明第一第二的线条和填充颜色
+#     aspect = 1, cex = 1.5, # aspect: panel的纵横比；cex：每个panel内点的大小乘以1.5
+#     layout = c(2, 2), # 因为是画多个panel，所有可以通过layout这个向量进行排版设置(column, row, page), where page is optional, 
+#     type = c("p","g"), #p表示point；g表示grid，要画栅格线
+#     strip=strip.custom(strip.levels=TRUE,strip.names=FALSE, style=1), # 一个布尔值，决定是否要标示（skies，day_night)在每一组的值，默认显示在panel上方。
+#																		# strip.custom用于进行设定strip的风格：strip.levels 是分组条件的值，TRUE表示要显示分组条件的值，FALSE不显示
+#																		# strip.names是分组条件的名称（列名，变量名），TRUE显示，FALSE不显示
+#																		# style：一般=1
+#     xlab = "Temperature (Degrees Fahrenheit)", 
+#     ylab = "Attendance (thousands)",
+#     key = list(space = "top",                                         # 当指定groups，需要用key来设定legend：space：legend显示在顶部
+#         text = list(rev(group.labels),col = rev(group.colors)),       # text：指定legend的文本说明，一个list; 另外，调用rev是返回向量的逆序，这里的目的是想把Yes的显示在No前面
+#         points = list(pch = rev(group.symbols), col = rev(group.colors), #points：逻辑变量，是否显示点。用list设置风格：legend的点的形状颜色等风格
+#         fill = rev(group.fill))))  
+		
 # attendance by opponent and day/night game
 group.labels <- c("Day","Night")
 group.symbols <- c(1,20)
