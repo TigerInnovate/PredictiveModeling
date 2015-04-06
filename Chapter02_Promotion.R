@@ -109,21 +109,38 @@ bwplot(opponent ~ attend/1000, data = dodgers, groups = day_night,
     text = list(group.labels,col = "black"),
     points = list(pch = group.symbols, cex = group.symbols.size, 
     col = "darkblue")))
-     
+# 这幅图其实和bwplot关系不大，用xyplot也可以，因为panel里的具体作图过程已经由panel函数override
+# 用bwplot和xyplot的不同是，xyplot上下左右都有刻度，而bwplot的box的顶部和右部是没有刻度的。
+
+# bwplot(opponent ~ attend/1000, data = dodgers, groups = day_night, # 这里只有一个panel，每个（attend/1000,opponent)都由day_night分组("Day","Night")
+#     xlab = "Attendance (thousands)",
+#     panel = function(x, y, groups, subscripts, ...)                # 自定义panel函数，最后一个...必须要，否则其他参数无法传入
+#        {panel.grid(h = (length(levels(dodgers$opponent)) - 1), v = -1) # 画栅格，h指定有几条水平栅格线，v指定有几条垂直栅格线，-1表示栅格线数与x，y轴上的刻度对齐
+#         panel.stripplot(x, y, groups = groups, subscripts = subscripts, # stripplot开始画点(x,y), 按照group分组指定不同点形状与大小等风格，注意当指定group时，subscripts必须指定。
+#         cex = group.symbols.size, pch = group.symbols, col = "darkblue")
+#        },
+#     key = list(space = "top",  									 #这里指定legend，同xyplot
+#     text = list(group.labels,col = "black"),
+#     points = list(pch = group.symbols, cex = group.symbols.size, 
+#     col = "darkblue")))     
+
+
 # employ training-and-test regimen for model validation
-set.seed(1234) # set seed for repeatability of training-and-test split
+# 分割数据集为TRAIN和TEST两部分
 training_test <- c(rep(1,length=trunc((2/3)*nrow(dodgers))),
 rep(2,length=(nrow(dodgers) - trunc((2/3)*nrow(dodgers)))))
-dodgers$training_test <- sample(training_test) # random permutation 
+set.seed(1234) # set seed for repeatability of training-and-test split，设置种子是为了重现，便于测试和验证
+dodgers$training_test <- sample(training_test) # random permutation ，因为设置了种子，所以sample的结果每次运行都一样。
 dodgers$training_test <- factor(dodgers$training_test, 
-  levels=c(1,2), labels=c("TRAIN","TEST"))
+  levels=c(1,2), labels=c("TRAIN","TEST")) #术语，对于一个factor，名字成为label，而内在值称为level
 dodgers.train <- subset(dodgers, training_test == "TRAIN")
 print(str(dodgers.train)) # check training data frame
 dodgers.test <- subset(dodgers, training_test == "TEST")
 print(str(dodgers.test)) # check test data frame
 
 # specify a simple model with bobblehead entered last
-my.model <- {attend ~ ordered_month + ordered_day_of_week + bobblehead}
+# 本例中，都是分类变量（factor）作为自变量，连续变量（covariate）必须是数值
+my.model <- {attend ~ ordered_month + ordered_day_of_week + bobblehead} #单语句句可以省略{}
 
 # fit the model to the training set
 train.model.fit <- lm(my.model, data = dodgers.train)
@@ -138,6 +155,8 @@ dodgers.test$predict_attend <- predict(train.model.fit,
 
 # compute the proportion of response variance
 # accounted for when predicting out-of-sample
+# 应变量（y）就是反应变量response variable，
+# 判定系数(计算反应方差)：线性相关系数的平方：判断拟合优劣的指标
 cat("\n","Proportion of Test Set Variance Accounted for: ",
 round((with(dodgers.test,cor(attend,predict_attend)^2)),
   digits=3),"\n",sep="")
@@ -157,9 +176,9 @@ xyplot(predict_attend/1000 ~ attend/1000 | training_test,
        aspect=1, type = c("p","g"),
        panel=function(x,y, ...)
             {panel.xyplot(x,y,...)
-             panel.segments(25,25,60,60,col="black",cex=2)
+             panel.segments(25,25,60,60,col="black",cex=2) #因为要划一根基准线，所以需要自定义panel函数
             },
-       strip=function(...) strip.default(..., style=1),
+       strip=function(...) strip.default(..., style=1),#该句可以省略
        xlab = "Actual Attendance (thousands)", 
        ylab = "Predicted Attendance (thousands)",
        key = list(space = "top", 
