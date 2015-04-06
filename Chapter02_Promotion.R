@@ -26,7 +26,7 @@ dodgers$ordered_day_of_week <- factor(dodgers$ordered_day_of_week, levels=1:7,
 labels=c("Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"))
 
 # exploratory data analysis with standard graphics: attendance by day of week
-# To Do: 研究这里的plot为什么会画boxplot？
+# 当plot的（x,y)中的x是factor，会画出关于y的boxplot
 with(data=dodgers,plot(ordered_day_of_week, attend/1000, 
 xlab = "Day of Week", ylab = "Attendance (thousands)", 
 col = "violet", las = 1))
@@ -193,8 +193,10 @@ my.model.fit <- lm(my.model, data = dodgers)  # use all available data
 print(summary(my.model.fit))
 # tests statistical significance of the bobblehead promotion
 # type I anova computes sums of squares for sequential tests
+#To Do： 类型1的anova含义？
 print(anova(my.model.fit))  
 
+#这里估计当Bobblehead==Yes，即BobbleheadYes=1的时候，参数就是对y的贡献（假设其他dummy variable==0）
 cat("\n","Estimated Effect of Bobblehead Promotion on Attendance: ",
 round(my.model.fit$coefficients[length(my.model.fit$coefficients)],
 digits = 0),"\n",sep="")
