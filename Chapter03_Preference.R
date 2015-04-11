@@ -3,7 +3,7 @@
 # R preliminaries to get the user-defined function for spine chart: 
 # place the spine chart code file <R_utility_program_1.R>
 # in your working directory and execute it by
-#     source("R_utility_program_1.R")
+#     source("Chapter03_SpineChart.R")
 # Or if you have the R binary file in your working directory, use
 #     load(file="mtpa_spine_chart.Rdata")
 
